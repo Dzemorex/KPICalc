@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         KPI Calculator
 // @namespace    http://tampermonkey.net/
-// @version      1.3.5
+// @version      1.3.6
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
 // @match        *://*/*
 // @downloadURL  https://github.com/Dzemorex/KPICalc/raw/master/KPI%20Calculator-1.3.3.user.js
