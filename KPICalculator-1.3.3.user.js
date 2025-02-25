@@ -10,6 +10,7 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-end
+// @author       Michał Jeromin
 // ==/UserScript==
 
 (function() {
