@@ -1,5 +1,6 @@
 // ==UserScript==
 // @name         KPI Calculator
+// @author       Michał Jeromin
 // @namespace    http://tampermonkey.net/
 // @version      1.3.6
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
@@ -10,7 +11,6 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-end
-// @author       Michał Jeromin
 // ==/UserScript==
 
 (function() {
