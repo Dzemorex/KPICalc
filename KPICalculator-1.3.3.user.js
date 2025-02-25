@@ -4,8 +4,8 @@
 // @version      1.3.6
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
 // @match        *://*/*
-// @downloadURL  https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPI%20Calculator-1.3.3.user.js
-// @updateURL    https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPI%20Calculator-1.3.3.user.js
+// @downloadURL  https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPI20Calculator-1.3.3.user.js
+// @updateURL    https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPI20Calculator-1.3.3.user.js
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue
