@@ -2,7 +2,7 @@
 // @name         KPI Calculator
 // @author       Michał Jeromin
 // @namespace    http://tampermonkey.net/
-// @version      1.3.9
+// @version      1.4.0
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
 // @match        *://*/*
 // @downloadURL  https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPICalculator.user.js
@@ -164,6 +164,23 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+        #kpiCalculator .value-input {
+            width: 50px;
+            height: 30px;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: var(--bg-color);
+            text-align: center;
+            color: var(--text-color);
+            font-family: Corbel, sans-serif;
+            font-size: 14px;
+            box-sizing: border-box;
+            border-radius: 8px;
+        }
+        #kpiCalculator .value-input:focus {
+            outline: 2px solid var(--hover-color);
         }
         #kpiCalculator .arrows {
             display: flex;
@@ -478,7 +495,7 @@
         <div class="counter-container">
             <div class="counter-item">
                 <div class="label-box">Salv(TM)</div>
-                <div class="value-box" id="value-salvTM">${counters.salvTM}</div>
+                <input type="text" class="value-input" id="value-salvTM" value="${counters.salvTM}" data-var="salvTM">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="salvTM">▲</button>
                     <button class="arrow-btn decrease" data-var="salvTM">▼</button>
@@ -486,7 +503,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Salv(SCR)</div>
-                <div class="value-box" id="value-salvSCR">${counters.salvSCR}</div>
+                <input type="text" class="value-input" id="value-salvSCR" value="${counters.salvSCR}" data-var="salvSCR">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="salvSCR">▲</button>
                     <button class="arrow-btn decrease" data-var="salvSCR">▼</button>
@@ -494,7 +511,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">SEON</div>
-                <div class="value-box" id="value-seon">${counters.seon}</div>
+                <input type="text" class="value-input" id="value-seon" value="${counters.seon}" data-var="seon">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="seon">▲</button>
                     <button class="arrow-btn decrease" data-var="seon">▼</button>
@@ -502,7 +519,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Fraud Repo</div>
-                <div class="value-box" id="value-fraudRepo">${counters.fraudRepo}</div>
+                <input type="text" class="value-input" id="value-fraudRepo" value="${counters.fraudRepo}" data-var="fraudRepo">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="fraudRepo">▲</button>
                     <button class="arrow-btn decrease" data-var="fraudRepo">▼</button>
@@ -510,7 +527,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Zendesk opened</div>
-                <div class="value-box" id="value-zendeskOpened">${counters.zendeskOpened}</div>
+                <input type="text" class="value-input" id="value-zendeskOpened" value="${counters.zendeskOpened}" data-var="zendeskOpened">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="zendeskOpened">▲</button>
                     <button class="arrow-btn decrease" data-var="zendeskOpened">▼</button>
@@ -518,7 +535,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Zendesk closed</div>
-                <div class="value-box" id="value-zendeskClosed">${counters.zendeskClosed}</div>
+                <input type="text" class="value-input" id="value-zendeskClosed" value="${counters.zendeskClosed}" data-var="zendeskClosed">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="zendeskClosed">▲</button>
                     <button class="arrow-btn decrease" data-var="zendeskClosed">▼</button>
@@ -526,7 +543,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Jira closed</div>
-                <div class="value-box" id="value-jiraClosed">${counters.jiraClosed}</div>
+                <input type="text" class="value-input" id="value-jiraClosed" value="${counters.jiraClosed}" data-var="jiraClosed">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="jiraClosed">▲</button>
                     <button class="arrow-btn decrease" data-var="jiraClosed">▼</button>
@@ -534,7 +551,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">SAR repo</div>
-                <div class="value-box" id="value-sarRepo">${counters.sarRepo}</div>
+                <input type="text" class="value-input" id="value-sarRepo" value="${counters.sarRepo}" data-var="sarRepo">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="sarRepo">▲</button>
                     <button class="arrow-btn decrease" data-var="sarRepo">▼</button>
@@ -542,7 +559,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">RFI repo</div>
-                <div class="value-box" id="value-rfiRepo">${counters.rfiRepo}</div>
+                <input type="text" class="value-input" id="value-rfiRepo" value="${counters.rfiRepo}" data-var="rfiRepo">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="rfiRepo">▲</button>
                     <button class="arrow-btn decrease" data-var="rfiRepo">▼</button>
@@ -550,7 +567,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">AML Onboarding</div>
-                <div class="value-box" id="value-amlOnboarding">${counters.amlOnboarding}</div>
+                <input type="text" class="value-input" id="value-amlOnboarding" value="${counters.amlOnboarding}" data-var="amlOnboarding">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="amlOnboarding">▲</button>
                     <button class="arrow-btn decrease" data-var="amlOnboarding">▼</button>
@@ -558,7 +575,7 @@
             </div>
             <div class="counter-item">
                 <div class="label-box">Downtime</div>
-                <div class="value-box" id="value-downtime">${counters.downtime}</div>
+                <input type="text" class="value-input" id="value-downtime" value="${counters.downtime}" data-var="downtime">
                 <div class="arrows">
                     <button class="arrow-btn increase" data-var="downtime">▲</button>
                     <button class="arrow-btn decrease" data-var="downtime">▼</button>
@@ -650,6 +667,36 @@
     topDoc.querySelectorAll('#kpiCalculator .arrow-btn.decrease').forEach(button => {
         button.addEventListener('click', function() {
             modifyValue(this.dataset.var, -1);
+        });
+    });
+
+    topDoc.querySelectorAll('#kpiCalculator .value-input').forEach(input => {
+        input.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const variable = this.dataset.var;
+                const newValue = parseInt(this.value) || 0;
+                const oldValue = counters[variable] || 0;
+                counters[variable] = newValue;
+                const valueChange = newValue - oldValue;
+                const kpiChange = valueChange * kpiFactors[variable];
+                
+                if (valueChange > 0) {
+                    kpiNeeded = Math.max(0, kpiNeeded - kpiChange);
+                    kpiValue += kpiChange;
+                } else if (valueChange < 0) {
+                    kpiValue = Math.max(0, kpiValue + kpiChange);
+                    kpiNeeded = Math.min(kpiNeededInitial, Math.max(0, kpiNeededInitial - kpiValue));
+                }
+
+                GM_setValue('counters', counters);
+                GM_setValue('kpiNeeded', kpiNeeded);
+                GM_setValue('kpiValue', kpiValue);
+                updateKPI();
+                this.blur();
+            }
         });
     });
 
@@ -750,7 +797,6 @@
                     return;
                 }
 
-                // Expected header: "Date;Salv(TM);Salv(SCR);SEON;Fraud Repo;Zendesk opened;Zendesk closed;Jira closed;SAR repo;RFI repo;AML Onboarding;Downtime;Total KPI;% of Total KPI Done"
                 const header = lines[0].split(';');
                 const expectedHeader = ['Date', 'Salv(TM)', 'Salv(SCR)', 'SEON', 'Fraud Repo', 'Zendesk opened', 'Zendesk closed', 'Jira closed', 'SAR repo', 'RFI repo', 'AML Onboarding', 'Downtime', 'Total KPI', '% of Total KPI Done'];
                 if (!header.every((val, idx) => val === expectedHeader[idx])) {
@@ -780,7 +826,6 @@
                     newHistory.push(entry);
                 }
 
-                // Merge with existing history, avoiding duplicates by date
                 const existingDates = new Set(history.map(entry => entry.date));
                 const mergedHistory = [...history, ...newHistory.filter(entry => !existingDates.has(entry.date))];
                 history = mergedHistory;
@@ -792,11 +837,12 @@
             }
         };
         reader.readAsText(file);
-        event.target.value = ''; // Reset input to allow re-uploading the same file
+        event.target.value = '';
     }
 
     function modifyValue(variable, change) {
-        const currentValue = counters[variable] || 0;
+        const input = topDoc.getElementById(`value-${variable}`);
+        const currentValue = parseInt(input.value) || 0;
         let newValue = Math.max(0, currentValue + change);
         const valueChange = newValue - currentValue;
         const kpiChange = valueChange * kpiFactors[variable];
@@ -810,17 +856,17 @@
         }
 
         counters[variable] = newValue;
-        updateDisplay();
-        updateKPI();
+        input.value = newValue;
         GM_setValue('counters', counters);
         GM_setValue('kpiNeeded', kpiNeeded);
         GM_setValue('kpiValue', kpiValue);
+        updateKPI();
     }
 
     function updateDisplay() {
         for (let key in counters) {
             const element = topDoc.getElementById(`value-${key}`);
-            if (element) element.textContent = counters[key] || 0;
+            if (element) element.value = counters[key] || 0;
         }
     }
 
