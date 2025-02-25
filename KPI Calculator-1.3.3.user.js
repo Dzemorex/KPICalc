@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         KPI Calculator
 // @namespace    http://tampermonkey.net/
-// @version      1.3.3
+// @version      1.3.4
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
 // @match        *://*/*
+// @downloadURL  https://github.com/Dzemorex/KPICalc/raw/master/KPI%20Calculator-1.3.3.user.js
 // @grant        GM_addStyle
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @grant        GM_xmlhttpRequest
 // @run-at       document-end
 // ==/UserScript==
 
@@ -43,8 +43,6 @@
     };
 
     const kpiNeededInitial = 420;
-    const CURRENT_VERSION = '1.3.3'; // Define current version for comparison
-    const UPDATE_URL = 'https://pastebin.com/raw/W0PDAp0c';
 
     const topDoc = window.top.document;
 
@@ -275,11 +273,6 @@
         #kpiCalculator .night-mode .creator {
             color: #D3D3D3;
         }
-        #kpiCalculator .update-row {
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 10px;
-        }
         #historyPopup {
             display: none;
             position: fixed;
@@ -466,9 +459,6 @@
     calculator.style.display = isCalculatorVisible ? 'block' : 'none';
 
     calculator.innerHTML = `
-        <div class="update-row">
-            <button id="checkUpdates">Check for Updates</button>
-        </div>
         <div class="kpi-row">
             <div class="kpi-display" id="kpiNeeded">KPI needed: ${kpiNeeded}</div>
             <div class="progress-bar">
@@ -665,7 +655,6 @@
     topDoc.getElementById('downloadHistoryPopup').addEventListener('click', downloadHistory);
     topDoc.getElementById('clearHistoryPopup').addEventListener('click', clearHistory);
     topDoc.getElementById('closeHistory').addEventListener('click', closeHistoryPopup);
-    topDoc.getElementById('checkUpdates').addEventListener('click', checkForUpdates);
 
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
@@ -735,68 +724,6 @@
             overlay.style.display = 'none';
         } else {
             console.error('Custom popup overlay not found during hide');
-        }
-    }
-
-    function compareVersions(v1, v2) {
-        const parts1 = v1.split('.').map(Number);
-        const parts2 = v2.split('.').map(Number);
-        for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
-            const num1 = parts1[i] || 0;
-            const num2 = parts2[i] || 0;
-            if (num1 < num2) return -1;
-            if (num1 > num2) return 1;
-        }
-        return 0;
-    }
-
-    function checkForUpdates() {
-        GM_xmlhttpRequest({
-            method: 'GET',
-            url: UPDATE_URL,
-            onload: function(response) {
-                const lines = response.responseText.split('\n');
-                if (lines.length >= 4) {
-                    const remoteVersionLine = lines[3]; // 4th line (index 3)
-                    const remoteVersionMatch = remoteVersionLine.match(/@version\s+([\d.]+)/);
-                    if (remoteVersionMatch && remoteVersionMatch[1]) {
-                        const remoteVersion = remoteVersionMatch[1];
-                        const comparison = compareVersions(CURRENT_VERSION, remoteVersion);
-                        if (comparison < 0) { // remoteVersion is newer
-                            showCustomPopup(
-                                `A new version (${remoteVersion}) is available!\nCurrent version: ${CURRENT_VERSION}\nWould you like to update now?`,
-                                [
-                                    { text: 'Yes', callback: () => updateScript(response.responseText) },
-                                    { text: 'No', callback: () => {} }
-                                ]
-                            );
-                        } else if (comparison === 0) {
-                            showCustomPopup('You are running the latest version (' + CURRENT_VERSION + ').');
-                        } else {
-                            showCustomPopup('Your version (' + CURRENT_VERSION + ') is newer than the available version (' + remoteVersion + ').');
-                        }
-                    } else {
-                        showCustomPopup('Could not parse version from update source.');
-                    }
-                } else {
-                    showCustomPopup('Failed to retrieve version information: insufficient lines.');
-                }
-            },
-            onerror: function() {
-                showCustomPopup('Error checking for updates. Please try again later.');
-            }
-        });
-    }
-
-    function updateScript(newScript) {
-        if (typeof GM_setClipboard === 'function') {
-            GM_setClipboard(newScript);
-            showCustomPopup('Script copied to clipboard.\nPlease update it manually in TamperMonkey:\n1. Open TamperMonkey dashboard\n2. Edit this script\n3. Paste the new code\n4. Save');
-        } else {
-            const blob = new Blob([newScript], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            window.open(url, '_blank');
-            showCustomPopup('Script opened in a new tab.\nPlease copy it and update manually in TamperMonkey:\n1. Open TamperMonkey dashboard\n2. Edit this script\n3. Paste the new code\n4. Save');
         }
     }
 
