@@ -2,7 +2,7 @@
 // @name         KPI Calculator
 // @author       Michał Jeromin
 // @namespace    http://tampermonkey.net/
-// @version      1.4.1
+// @version      1.4.0
 // @description  Tracks KPI values and history in a web page overlay. Created by Michał Jeromin
 // @match        *://*/*
 // @downloadURL  https://github.com/Dzemorex/KPICalc/raw/refs/heads/main/KPICalculator.user.js
@@ -344,20 +344,15 @@
             border-collapse: collapse;
             margin-top: 10px;
         }
-        #historyPopup th {
-            background: var(--box-bg);
-            font-weight: 600;
-            cursor: pointer;
-            user-select: none;
-        }
-        #historyPopup th:hover {
-            background: var(--hover-color);
-        }
         #historyPopup th, #historyPopup td {
             padding: 8px;
             text-align: center;
             border-radius: 5px;
             color: var(--text-color);
+        }
+        #historyPopup th {
+            background: var(--box-bg);
+            font-weight: 600;
         }
         #historyPopup tr:nth-child(even) {
             background: var(--box-bg);
@@ -465,66 +460,6 @@
         #uploadHistoryInput {
             display: none;
         }
-        #dateResultPopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 1200px;
-            max-height: 80vh;
-            background: var(--bg-color);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 25000;
-            overflow-y: auto;
-            color: var(--text-color);
-            font-family: Corbel, sans-serif;
-            font-size: 14px;
-        }
-        #dateResultPopup h2 {
-            margin-top: 0;
-            font-weight: 600;
-        }
-        #dateResultPopup .button-row {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            background: var(--box-bg);
-            border-radius: 8px;
-            padding: 10px;
-        }
-        #dateResultPopup table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        #dateResultPopup th, #dateResultPopup td {
-            padding: 8px;
-            text-align: center;
-            border-radius: 5px;
-            color: var(--text-color);
-        }
-        #dateResultPopup th {
-            background: var(--box-bg);
-            font-weight: 600;
-        }
-        #dateResultPopup tr:nth-child(even) {
-            background: var(--box-bg);
-        }
-        #dateResultOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 20000;
-        }
     `);
 
     const existingCalculator = topDoc.getElementById('kpiCalculator');
@@ -539,10 +474,6 @@
     if (existingOverlay) existingOverlay.remove();
     const existingCustomPopupOverlay = topDoc.getElementById('customPopupOverlay');
     if (existingCustomPopupOverlay) existingCustomPopupOverlay.remove();
-    const existingDateResultPopup = topDoc.getElementById('dateResultPopup');
-    if (existingDateResultPopup) existingDateResultPopup.remove();
-    const existingDateResultOverlay = topDoc.getElementById('dateResultOverlay');
-    if (existingDateResultOverlay) existingDateResultOverlay.remove();
 
     const calculator = topDoc.createElement('div');
     calculator.id = 'kpiCalculator';
@@ -685,20 +616,20 @@
         <table id="historyTablePopup">
             <thead>
                 <tr>
-                    <th data-sort="date">Date</th>
-                    <th data-sort="salvTM">Salv(TM)</th>
-                    <th data-sort="salvSCR">Salv(SCR)</th>
-                    <th data-sort="seon">SEON</th>
-                    <th data-sort="fraudRepo">Fraud Repo</th>
-                    <th data-sort="zendeskOpened">Zendesk opened</th>
-                    <th data-sort="zendeskClosed">Zendesk closed</th>
-                    <th data-sort="jiraClosed">Jira closed</th>
-                    <th data-sort="sarRepo">SAR repo</th>
-                    <th data-sort="rfiRepo">RFI repo</th>
-                    <th data-sort="amlOnboarding">AML Onboarding</th>
-                    <th data-sort="downtime">Downtime</th>
-                    <th data-sort="totalKPI">Total KPI</th>
-                    <th data-sort="percentKPIDone">% of Total KPI Done</th>
+                    <th>Date</th>
+                    <th>Salv(TM)</th>
+                    <th>Salv(SCR)</th>
+                    <th>SEON</th>
+                    <th>Fraud Repo</th>
+                    <th>Zendesk opened</th>
+                    <th>Zendesk closed</th>
+                    <th>Jira closed</th>
+                    <th>SAR repo</th>
+                    <th>RFI repo</th>
+                    <th>AML Onboarding</th>
+                    <th>Downtime</th>
+                    <th>Total KPI</th>
+                    <th>% of Total KPI Done</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -709,23 +640,19 @@
     const historyOverlay = topDoc.createElement('div');
     historyOverlay.id = 'historyOverlay';
 
-    const dateResultPopup = topDoc.createElement('div');
-    dateResultPopup.id = 'dateResultPopup';
-    if (isNightMode) dateResultPopup.classList.add('night-mode');
-
-    const dateResultOverlay = topDoc.createElement('div');
-    dateResultOverlay.id = 'dateResultOverlay';
+    const customPopupOverlay = topDoc.createElement('div');
+    customPopupOverlay.id = 'customPopupOverlay';
+    const customPopup = topDoc.createElement('div');
+    customPopup.id = 'customPopup';
+    if (isNightMode) customPopup.classList.add('night-mode');
+    customPopupOverlay.appendChild(customPopup);
 
     topDoc.body.appendChild(calculator);
     topDoc.body.appendChild(showCalculatorButton);
     topDoc.body.appendChild(hideCalculatorButton);
     topDoc.body.appendChild(historyPopup);
     topDoc.body.appendChild(historyOverlay);
-    topDoc.body.appendChild(dateResultPopup);
-    topDoc.body.appendChild(dateResultOverlay);
-
-    let sortDirection = {};
-    let currentSortColumn = null;
+    topDoc.body.appendChild(customPopupOverlay);
 
     updateKPI();
     displayHistory(history);
@@ -785,14 +712,6 @@
     topDoc.getElementById('clearHistoryPopup').addEventListener('click', clearHistory);
     topDoc.getElementById('closeHistory').addEventListener('click', closeHistoryPopup);
 
-    // Add sorting to history table headers
-    topDoc.querySelectorAll('#historyTablePopup th[data-sort]').forEach(th => {
-        th.addEventListener('click', function() {
-            const column = this.dataset.sort;
-            sortHistory(column);
-        });
-    });
-
     document.addEventListener('visibilitychange', function() {
         if (!document.hidden) {
             counters = GM_getValue('counters', defaultValues);
@@ -819,12 +738,6 @@
     function addRemoveListeners() {
         topDoc.querySelectorAll('#historyPopup .remove-btn').forEach(button => {
             button.addEventListener('click', removeRow);
-        });
-        topDoc.querySelectorAll('#historyPopup .view-date-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const date = this.dataset.date;
-                showDateResult(date);
-            });
         });
     }
 
@@ -1059,155 +972,16 @@
         }
     }
 
-    function sortHistory(column) {
-        if (currentSortColumn === column) {
-            sortDirection[column] = !sortDirection[column];
-        } else {
-            currentSortColumn = column;
-            sortDirection[column] = true;
-        }
-
-        history.sort((a, b) => {
-            let valA, valB;
-            if (column === 'date') {
-                valA = a.date;
-                valB = b.date;
-            } else if (column === 'totalKPI') {
-                valA = Object.keys(kpiFactors).reduce((sum, key) => sum + (a[key] || 0), 0);
-                valB = Object.keys(kpiFactors).reduce((sum, key) => sum + (b[key] || 0), 0);
-            } else if (column === 'percentKPIDone') {
-                valA = (Object.keys(kpiFactors).reduce((sum, key) => sum + (a[key] || 0), 0) / kpiNeededInitial) * 100;
-                valB = (Object.keys(kpiFactors).reduce((sum, key) => sum + (b[key] || 0), 0) / kpiNeededInitial) * 100;
-            } else {
-                valA = a[column] || 0;
-                valB = b[column] || 0;
-            }
-
-            if (sortDirection[column]) {
-                return valA < valB ? -1 : valA > valB ? 1 : 0;
-            } else {
-                return valA > valB ? -1 : valA < valB ? 1 : 0;
-            }
-        });
-
-        displayHistory(history);
-    }
-
-    function showDateResult(date) {
-        const entry = history.find(e => e.date === date);
-        if (!entry) {
-            showCustomPopup('No data found for the selected date.');
-            return;
-        }
-
-        const dateResultPopup = topDoc.getElementById('dateResultPopup');
-        const dateResultOverlay = topDoc.getElementById('dateResultOverlay');
-        if (!dateResultPopup || !dateResultOverlay) return;
-
-        let totalKPI = 0;
-        for (let key in kpiFactors) {
-            totalKPI += entry[key] || 0;
-        }
-        const percentKPI = (totalKPI / kpiNeededInitial) * 100;
-
-        dateResultPopup.innerHTML = `
-            <h2>Results for ${date}</h2>
-            <div class="button-row">
-                <button id="generateReportBtn">Generate Report</button>
-                <button id="closeDateResultBtn">Close</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Salv(TM)</th>
-                        <th>Salv(SCR)</th>
-                        <th>SEON</th>
-                        <th>Fraud Repo</th>
-                        <th>Zendesk opened</th>
-                        <th>Zendesk closed</th>
-                        <th>Jira closed</th>
-                        <th>SAR repo</th>
-                        <th>RFI repo</th>
-                        <th>AML Onboarding</th>
-                        <th>Downtime</th>
-                        <th>Total KPI</th>
-                        <th>% of Total KPI Done</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>${entry.date}</td>
-                        <td>${entry.salvTM || 0}</td>
-                        <td>${entry.salvSCR || 0}</td>
-                        <td>${entry.seon || 0}</td>
-                        <td>${entry.fraudRepo || 0}</td>
-                        <td>${entry.zendeskOpened || 0}</td>
-                        <td>${entry.zendeskClosed || 0}</td>
-                        <td>${entry.jiraClosed || 0}</td>
-                        <td>${entry.sarRepo || 0}</td>
-                        <td>${entry.rfiRepo || 0}</td>
-                        <td>${entry.amlOnboarding || 0}</td>
-                        <td>${entry.downtime || 0}</td>
-                        <td>${totalKPI}</td>
-                        <td>${percentKPI.toFixed(2)}%</td>
-                    </tr>
-                </tbody>
-            </table>
-        `;
-
-        dateResultPopup.style.display = 'block';
-        dateResultOverlay.style.display = 'block';
-
-        topDoc.getElementById('generateReportBtn').addEventListener('click', () => generateReportForDate(date));
-        topDoc.getElementById('closeDateResultBtn').addEventListener('click', closeDateResultPopup);
-    }
-
-    function generateReportForDate(date) {
-        const entry = history.find(e => e.date === date);
-        if (!entry) return;
-
-        let totalKPI = 0;
-        for (let key in kpiFactors) {
-            totalKPI += entry[key] || 0;
-        }
-        const percentKPI = (totalKPI / kpiNeededInitial) * 100;
-
-        const csvContent = `Date;Salv(TM);Salv(SCR);SEON;Fraud Repo;Zendesk opened;Zendesk closed;Jira closed;SAR repo;RFI repo;AML Onboarding;Downtime;Total KPI;% of Total KPI Done\n` +
-            `${entry.date};${entry.salvTM || 0};${entry.salvSCR || 0};${entry.seon || 0};${entry.fraudRepo || 0};${entry.zendeskOpened || 0};${entry.zendeskClosed || 0};${entry.jiraClosed || 0};${entry.sarRepo || 0};${entry.rfiRepo || 0};${entry.amlOnboarding || 0};${entry.downtime || 0};${totalKPI};${percentKPI.toFixed(2)}%\n`;
-
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = topDoc.createElement('a');
-        a.href = url;
-        a.download = `history_${date}.csv`;
-        topDoc.body.appendChild(a);
-        a.click();
-        topDoc.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    }
-
-    function closeDateResultPopup() {
-        const dateResultPopup = topDoc.getElementById('dateResultPopup');
-        const dateResultOverlay = topDoc.getElementById('dateResultOverlay');
-        if (dateResultPopup && dateResultOverlay) {
-            dateResultPopup.style.display = 'none';
-            dateResultOverlay.style.display = 'none';
-        }
-    }
-
     function toggleNightMode() {
         isNightMode = !isNightMode;
         const calculator = topDoc.getElementById('kpiCalculator');
         const historyPopup = topDoc.getElementById('historyPopup');
         const customPopup = topDoc.getElementById('customPopup');
-        const dateResultPopup = topDoc.getElementById('dateResultPopup');
         const showButton = topDoc.getElementById('showCalculatorButton');
         const hideButton = topDoc.getElementById('hideCalculatorButton');
         if (calculator) calculator.classList.toggle('night-mode');
         if (historyPopup) historyPopup.classList.toggle('night-mode');
         if (customPopup) customPopup.classList.toggle('night-mode');
-        if (dateResultPopup) dateResultPopup.classList.toggle('night-mode');
         if (showButton) showButton.classList.toggle('night-mode');
         if (hideButton) hideButton.classList.toggle('night-mode');
         GM_setValue('nightMode', isNightMode);
@@ -1228,21 +1002,18 @@
         const calculator = topDoc.getElementById('kpiCalculator');
         const historyPopup = topDoc.getElementById('historyPopup');
         const customPopup = topDoc.getElementById('customPopup');
-        const dateResultPopup = topDoc.getElementById('dateResultPopup');
         const showButton = topDoc.getElementById('showCalculatorButton');
         const hideButton = topDoc.getElementById('hideCalculatorButton');
         if (isNightMode) {
             calculator?.classList.add('night-mode');
             historyPopup?.classList.add('night-mode');
             customPopup?.classList.add('night-mode');
-            dateResultPopup?.classList.add('night-mode');
             showButton?.classList.add('night-mode');
             hideButton?.classList.add('night-mode');
         } else {
             calculator?.classList.remove('night-mode');
             historyPopup?.classList.remove('night-mode');
             customPopup?.classList.remove('night-mode');
-            dateResultPopup?.classList.remove('night-mode');
             showButton?.classList.remove('night-mode');
             hideButton?.classList.remove('night-mode');
         }
@@ -1332,10 +1103,7 @@
                 <td>${entry.downtime || 0}</td>
                 <td>${totalKPI}</td>
                 <td>${percentKPI.toFixed(2)}%</td>
-                <td>
-                    <button class="remove-btn" data-index="${index}">Remove</button>
-                    <button class="view-date-btn" data-date="${entry.date}">View</button>
-                </td>
+                <td><button class="remove-btn" data-index="${index}">Remove</button></td>
             `;
             tbody.appendChild(row);
         });
